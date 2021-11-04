@@ -24,6 +24,7 @@ const labels = {
   7: "Perfect",
 };
 
+// 模板
 //定义不同页面的字号：
 const theme = createTheme();
 //不要在这里用这个东西createTheme。这个是全局的
@@ -33,14 +34,22 @@ theme.typography.h5 = {
     //！为什么这里不用breakpoint
     fontSize: "1rem",
   },
-  [theme.breakpoints.up("md")]: {
+  [theme.breakpoints.up("lg")]: {
     fontSize: "1.7rem",
   },
 };
 
 // 模板
-const useStyles = makeStyles(() => ({
-  root: { textAlign: "center" },
+const useStyles = makeStyles((theme) => ({
+  root: {
+    textAlign: "center",
+  },
+  TextField: {
+    width: 250,
+    [theme.breakpoints.up("md")]: {
+      width: 600,
+    },
+  },
 }));
 
 export default function UserFeedBack() {
@@ -91,7 +100,8 @@ export default function UserFeedBack() {
 
           <Box m="auto" width={"75%"} alignItems="center">
             <TextField
-              multiline="True"
+              className={classes.TextField}
+              multiline={true}
               fullWidth
               id="reason"
               label="请在这里输入文字"
@@ -113,7 +123,8 @@ export default function UserFeedBack() {
 
         <Box m="auto" width={"75%"} alignItems="center">
           <TextField
-            multiline="True"
+            className={classes.TextField}
+            multiline={true}
             fullWidth
             id="improvement"
             label="请在这里输入文字"

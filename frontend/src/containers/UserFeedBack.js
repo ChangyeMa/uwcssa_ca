@@ -1,14 +1,25 @@
+import {} from "../";
+
 import {
+  Avatar,
   Box,
   Button,
+  Container,
+  CssBaseline,
+  GlobalStyles,
   Rating,
+  Snackbar,
+  Stack,
   TextField,
   ThemeProvider,
   Typography,
+  colors,
   createTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import MuiAlert from "@mui/material/Alert";
 import { makeStyles } from "@mui/styles";
 
 // 按钮
@@ -29,13 +40,10 @@ const labels = {
 const theme = createTheme();
 //不要在这里用这个东西createTheme。这个是全局的
 theme.typography.h5 = {
-  fontSize: "1rem",
-  "@media (min-width:1200px)": {
-    //！为什么这里不用breakpoint
-    fontSize: "1rem",
-  },
+  fontSize: "0.9rem",
+
   [theme.breakpoints.up("lg")]: {
-    fontSize: "1.7rem",
+    fontSize: "1.5rem",
   },
 };
 
@@ -43,11 +51,12 @@ theme.typography.h5 = {
 const useStyles = makeStyles((theme) => ({
   root: {
     textAlign: "center",
+    backgroundColor: "#cfe8fc",
   },
   TextField: {
     width: 250,
     [theme.breakpoints.up("md")]: {
-      width: 600,
+      width: 450,
     },
   },
 }));
@@ -56,92 +65,123 @@ export default function UserFeedBack() {
   const classes = useStyles();
   const [value, setValue] = useState(7); // 评价默认值是7 （满分）
   const [hover, setHover] = useState(-1); //
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   return (
     <div className={classes.root}>
-      <Box mt={10} mx={5}>
-        <ThemeProvider theme={theme}>
-          <Typography variant="h5">
-            How easy do you find the website to use?
-          </Typography>
-          <Typography variant="h5">
-            你觉得我们的网站使用起来是否方便？
-          </Typography>
-        </ThemeProvider>
-      </Box>
-
-      <Box mt={3} mx={5}>
-        <Rating
-          name="hover-feedback"
-          value={value}
-          precision={1}
-          max={7}
-          size="large"
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-          onChangeActive={(event, newHover) => {
-            setHover(newHover);
-          }}
-        />
-        {value !== null && (
-          <Box ml={0}>{labels[hover !== -1 ? hover : value]}</Box>
-        )}
-      </Box>
-
-      <Box mt={5} mx={5}>
-        <ThemeProvider theme={theme}>
-          <Typography variant="h5">
-            What was the main reason you gave us that score?
-          </Typography>
-          <Typography variant="h5">
-            您给我们这个分数的主要原因是什么？
-          </Typography>
-
-          <Box m="auto" width={"75%"} alignItems="center">
-            <TextField
-              className={classes.TextField}
-              multiline={true}
-              fullWidth
-              id="reason"
-              label="请在这里输入文字"
-              variant="standard"
-            />
+      <Box sx={{ bgcolor: "#cfe8fc", height: "2vh" }} />
+      <Container maxWidth="sm">
+        <Box mt={3} sx={{ bgcolor: "#cfe8fc" }} />
+        <Box border={1} sx={{ bgcolor: "white" }}>
+          <Stack
+            mt={3}
+            mx={5}
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Avatar sx={{ width: 50, height: 50, bgcolor: colors.green[500] }}>
+              <AssignmentIcon />
+            </Avatar>
+            <Typography variant="h5">意见箱</Typography>
+          </Stack>
+          <Box mt={4} mx={5}>
+            <ThemeProvider theme={theme}>
+              <Typography variant="h5">
+                你觉得我们的网站使用起来是否方便？
+              </Typography>
+            </ThemeProvider>
           </Box>
-        </ThemeProvider>
-      </Box>
 
-      <Box mt={5} mx={5}>
-        <ThemeProvider theme={theme}>
-          <Typography variant="h5">
-            What could we do to improve your experience on the website?
-          </Typography>
-          <Typography variant="h5">
-            我们可以做些什么来改善网站上的体验？
-          </Typography>
-        </ThemeProvider>
+          <Box mt={3} mx={5}>
+            <Rating
+              name="hover-feedback"
+              value={value}
+              precision={1}
+              max={7}
+              size="large"
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+              onChangeActive={(event, newHover) => {
+                setHover(newHover);
+              }}
+            />
+            {value !== null && (
+              <Box ml={0}>{labels[hover !== -1 ? hover : value]}</Box>
+            )}
+          </Box>
 
-        <Box m="auto" width={"75%"} alignItems="center">
-          <TextField
-            className={classes.TextField}
-            multiline={true}
-            fullWidth
-            id="improvement"
-            label="请在这里输入文字"
-            variant="standard"
-          />
+          <Box mt={5} mx={5}>
+            <Box m="auto" alignItems="center" mt={2}>
+              <TextField
+                className={classes.TextField}
+                multiline={true}
+                id="reason"
+                label={"您给我们这个分数的主要原因是什么？"}
+                variant="outlined"
+                minRows={3}
+              />
+            </Box>
+          </Box>
+
+          <Box mt={5} mx={5}>
+            <Box m="auto" alignItems="center" mt={2}>
+              <TextField
+                className={classes.TextField}
+                multiline={true}
+                id="improvement"
+                label="我们可以做些什么来改善网站上的体验？"
+                variant="outlined"
+                minRows={3}
+              />
+            </Box>
+          </Box>
+          <Container></Container>
+          <Box mt={3} mb={3} onClick={handleClick}>
+            <Button
+              type="submit"
+              color="primary"
+              size="large"
+              sx={{ borderRadius: 50 }}
+            >
+              提交
+            </Button>
+
+            <Snackbar
+              open={open}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              message="Thank you!"
+            >
+              <Alert
+                onClose={handleClose}
+                severity="success"
+                sx={{ width: "100%" }}
+              >
+                Your opinion is received, thank you!
+              </Alert>
+            </Snackbar>
+          </Box>
         </Box>
-      </Box>
-      <Box mt={5} mb={5}>
-        <Button
-          type="submit"
-          color="primary"
-          size="large"
-          sx={{ borderRadius: 50 }}
-        >
-          提交
-        </Button>
-      </Box>
+      </Container>
+      <Box mt={3} sx={{ bgcolor: "#cfe8fc", height: "2vh" }} />
     </div>
   );
 }
